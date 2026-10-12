@@ -1,0 +1,23 @@
+# Add project-specific packages for Buildroot here
+#
+# If these are non-proprietary, please consider contributing them back to
+# Nerves or Buildroot.
+menu "Custom Packages"
+
+source "$NERVES_DEFCONFIG_DIR/packages/citronics-initramfs/Config.in"
+source "$NERVES_DEFCONFIG_DIR/packages/unudhcpd/Config.in"
+source "$NERVES_DEFCONFIG_DIR/packages/tb3-firmware/Config.in"
+source "$NERVES_DEFCONFIG_DIR/packages/tb3-tools/Config.in"
+source "$NERVES_DEFCONFIG_DIR/packages/tb3-audio/Config.in"
+
+menu "MediaTek MT8127 connectivity and cameras"
+source "$NERVES_DEFCONFIG_DIR/packages/mt8127-btif/Config.in"
+source "$NERVES_DEFCONFIG_DIR/packages/mt8127-consys/Config.in"
+source "$NERVES_DEFCONFIG_DIR/packages/mt8127-wmt/Config.in"
+source "$NERVES_DEFCONFIG_DIR/packages/mt8127-wlan/Config.in"
+source "$NERVES_DEFCONFIG_DIR/packages/mt8127-bt/Config.in"
+source "$NERVES_DEFCONFIG_DIR/packages/mt8127-fm/Config.in"
+source "$NERVES_DEFCONFIG_DIR/packages/mt8127-camera/Config.in"
+endmenu
+
+endmenu

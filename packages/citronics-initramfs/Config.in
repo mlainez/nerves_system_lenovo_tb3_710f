@@ -1,0 +1,19 @@
+config BR2_PACKAGE_CITRONICS_INITRAMFS
+	bool "citronics-initramfs [TB3-710F]"
+	depends on !BR2_STATIC_LIBS
+	depends on BR2_USE_MMU
+	depends on BR2_TOOLCHAIN_HAS_THREADS
+	depends on BR2_INSTALL_LIBSTDCPP
+	depends on BR2_LINUX_KERNEL
+	select BR2_PACKAGE_BUSYBOX
+	select BR2_PACKAGE_UNUDHCPD
+	select BR2_PACKAGE_MULTIPATH_TOOLS
+	select BR2_PACKAGE_PARTED
+	help
+	  Early-boot initramfs, stored with the kernel in each boot
+	  slot. It maps the Nerves partitions nested in the stock
+	  userdata partition (mmcblk0p7) with kpartx, mounts the
+	  active rootfs (nested partition 2) and switch_roots into
+	  erlinit. When any step fails it brings up
+	  USB networking (10.0.42.1, the PC gets 10.0.42.2) and a
+	  telnet shell instead.

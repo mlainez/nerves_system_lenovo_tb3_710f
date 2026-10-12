@@ -1,0 +1,8 @@
+config BR2_PACKAGE_TB3_AUDIO
+	bool "tb3-audio [TB3-710F]"
+	depends on BR2_PACKAGE_ALSA_UTILS_ALSACTL
+	help
+	  Mixer defaults for the TB3-710F sound card (speaker and
+	  internal microphone routed, headphone gain -5 dB + 8 dB) as
+	  /var/lib/alsa/asound.state, for `alsactl --no-ucm -f <file>
+	  restore` once the card has probed.

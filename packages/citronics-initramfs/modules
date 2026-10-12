@@ -1,0 +1,5 @@
+# Kernel modules copied into the initramfs, as paths relative to
+# /lib/modules/<version>/, e.g. kernel/fs/squashfs/squashfs.ko.
+#
+# None: linux-nerves.fragment builds in everything on the path to
+# switch_root (MMC_MTK, BLK_DEV_DM, SQUASHFS, F2FS, USB_ETH).

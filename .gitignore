@@ -1,0 +1,7 @@
+/_build/
+/deps/
+/.nerves/
+/local.mk
+/firmware
+*.log
+*.tar.gz

@@ -1,0 +1,28 @@
+# Citronics initramfs deviceinfo for the Lenovo Tab3 7 (TB3-710F).
+#
+# Read for the USB recovery shell and for identification. The partition the
+# Nerves firmware lives in comes from nerves_base= on the kernel command line.
+
+deviceinfo_format_version="0"
+deviceinfo_name="Lenovo Tab3 7 (TB3-710F)"
+deviceinfo_manufacturer="Lenovo"
+deviceinfo_codename="lenovo-tb3-710f"
+deviceinfo_year="2016"
+deviceinfo_arch="armv7"
+deviceinfo_chassis="tablet"
+deviceinfo_keyboard="false"
+deviceinfo_external_storage="false"
+deviceinfo_screen_width="600"
+deviceinfo_screen_height="1024"
+
+# The recovery path uses the kernel's built-in g_ether (0005 patch); these
+# identifiers only matter for a configfs gadget.
+deviceinfo_usb_idVendor="0x18d1"
+deviceinfo_usb_idProduct="0xd001"
+deviceinfo_usb_serialnumber=""
+deviceinfo_usb_network_function="ncm.usb0"
+
+# unudhcpd gives the PC 10.0.42.2 (the tablet is 10.0.42.1), the addresses
+# of the Buildroot system and of its rescue image.
+deviceinfo_disable_dhcpd="false"
+deviceinfo_getty=""

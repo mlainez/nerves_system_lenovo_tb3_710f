@@ -1,0 +1,29 @@
+# Buildroot package override file: copy to local.mk to use.
+#
+# nerves_defconfig sets BR2_PACKAGE_OVERRIDE_FILE to
+# ${NERVES_DEFCONFIG_DIR}/local.mk. Buildroot -includes it, so having no
+# local.mk is the normal case once the kernel fork is published: the kernel
+# and the board packages are then fetched from the commits pinned in
+# nerves_defconfig and external.mk, and builds are reproducible.
+#
+# Point <PKG>_OVERRIDE_SRCDIR at a local checkout to build that package from
+# your working tree instead. Buildroot rsyncs the tree rather than unpacking
+# the tarball, and does not apply patches/linux. A firmware built this way is
+# not reproducible by anyone else.
+
+# The kernel fork (mlainez/linux-mt8127, branch 6.18/staging) is not
+# published yet, so this line is required for now.
+LINUX_OVERRIDE_SRCDIR = $(HOME)/Projects/linux-mt8127
+
+# Board packages from a buildroot-android checkout (the directories the
+# pinned tarball would provide).
+# BRA = $(HOME)/Projects/buildroot-android/buildroot-external/package
+# MT8127_BTIF_OVERRIDE_SRCDIR = $(BRA)/mt8127-connectivity/src
+# MT8127_CONSYS_OVERRIDE_SRCDIR = $(BRA)/mt8127-connectivity/src
+# MT8127_WMT_OVERRIDE_SRCDIR = $(BRA)/mt8127-connectivity/src
+# MT8127_WLAN_OVERRIDE_SRCDIR = $(BRA)/mt8127-connectivity/src
+# MT8127_BT_OVERRIDE_SRCDIR = $(BRA)/mt8127-connectivity/src
+# MT8127_FM_OVERRIDE_SRCDIR = $(BRA)/mt8127-connectivity/src
+# MT8127_CAMERA_OVERRIDE_SRCDIR = $(BRA)/mt8127-camera/src
+# TB3_TOOLS_OVERRIDE_SRCDIR = $(BRA)/tb3-tools
+# TB3_AUDIO_OVERRIDE_SRCDIR = $(BRA)/tb3-audio

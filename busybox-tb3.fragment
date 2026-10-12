@@ -1,0 +1,73 @@
+# BusyBox config fragment for nerves_system_lenovo_tb3_710f.
+#
+# Appended to board/nerves-common/busybox.config, which is deliberately
+# minimal: erlinit and the OTP release do the work at runtime. The citronics
+# initramfs reuses this BusyBox and needs a small Unix userland to map the
+# nested partitions, read the fwup environment, switch_root, and run the USB
+# recovery shell when that fails.
+
+# --- Mapping and pivoting ----------------------------------------------------
+CONFIG_LN=y
+CONFIG_SWITCH_ROOT=y
+CONFIG_FEATURE_INSTALLER=y
+
+# --- Helpers the init, functions.sh and nerves-slot.sh call -----------------
+CONFIG_CHMOD=y
+CONFIG_TOUCH=y
+CONFIG_HEAD=y
+CONFIG_CUT=y
+CONFIG_SED=y
+CONFIG_WC=y
+CONFIG_ECHO=y
+CONFIG_TRUE=y
+CONFIG_FALSE=y
+CONFIG_ENV=y
+CONFIG_PRINTF=y
+CONFIG_TEST=y
+CONFIG_FEATURE_TEST_64=y
+CONFIG_BASENAME=y
+CONFIG_DIRNAME=y
+CONFIG_UNAME=y
+# The upstream wait loops use $(seq 1 N); without seq they end at once.
+CONFIG_SEQ=y
+# The g_ether wait in the 0005 patch sleeps 0.1 s per try; without
+# FLOAT_SLEEP `sleep 0.1` fails at once and the 30 s wait is a busy loop.
+CONFIG_FEATURE_FANCY_SLEEP=y
+CONFIG_FEATURE_FLOAT_SLEEP=y
+
+CONFIG_AWK=y
+CONFIG_TR=y
+CONFIG_EXPR=y
+CONFIG_STAT=y
+CONFIG_SORT=y
+CONFIG_READLINK=y
+CONFIG_FEATURE_READLINK_FOLLOW=y
+CONFIG_HEXDUMP=y
+CONFIG_XXD=y
+
+# --- Process introspection ---------------------------------------------------
+CONFIG_PIDOF=y
+CONFIG_FEATURE_PIDOF_SINGLE=y
+CONFIG_FEATURE_PIDOF_OMIT=y
+CONFIG_PGREP=y
+CONFIG_PKILL=y
+CONFIG_KILLALL=y
+
+# --- USB recovery shell (citronics fail_halt_boot) ---------------------------
+CONFIG_TELNETD=y
+CONFIG_FEATURE_TELNETD_STANDALONE=y
+CONFIG_GETTY=y
+
+# --- Filesystem helpers for the recovery shell -------------------------------
+CONFIG_UMOUNT=y
+CONFIG_FEATURE_UMOUNT_ALL=y
+CONFIG_FEATURE_MOUNT_LABEL=y
+CONFIG_FEATURE_MOUNT_VERBOSE=y
+CONFIG_FEATURE_MOUNT_HELPERS=y
+CONFIG_DMESG=y
+CONFIG_LSMOD=y
+CONFIG_RMMOD=y
+CONFIG_INSMOD=y
+CONFIG_FEATURE_MODPROBE_BLACKLIST=y
+CONFIG_DD=y
+CONFIG_SHA256SUM=y

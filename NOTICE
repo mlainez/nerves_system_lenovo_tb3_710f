@@ -1,0 +1,35 @@
+nerves_system_lenovo_tb3_710f
+Copyright 2026 Marc Lainez
+
+This product includes software developed as part of the Nerves Project
+(https://github.com/nerves-project), licensed under Apache-2.0.
+
+The files in this repository are licensed under Apache-2.0 unless a file
+says otherwise. A *built* firmware image is an aggregate of many separately
+licensed components, and building one downloads and, in places, executes
+third-party source that is not covered by this repository's license:
+
+  * Linux kernel: GPL-2.0 WITH Linux-syscall-note.
+    Built from https://github.com/mlainez/linux-mt8127, a fork of mainline
+    Linux. The kernel configuration in linux-6.18.defconfig is the
+    buildroot-android tb3_710f board configuration.
+
+  * The MT8127 connectivity and camera drivers (packages/mt8127-*): GPL-2.0,
+    built from https://github.com/Spin42/buildroot-android. tb3-tools and
+    tb3-audio come from the same repository (MIT).
+
+  * Buildroot and the packages it builds: many licenses. Run
+    `make legal-info` in the Buildroot output directory for the manifest
+    of what a given build actually included.
+
+  * citronics-initramfs: https://github.com/Citronics/initramfs.
+    See that project's LICENSE. The patches under
+    packages/citronics-initramfs are Apache-2.0 as part of this work.
+
+  * unudhcpd: GPL-3.0, https://gitlab.postmarketos.org/postmarketOS/unudhcpd
+
+  * scripts/mkbootimg.py comes from buildroot-android's tb3_710f board.
+
+No proprietary firmware is part of this repository. A built image contains
+the tablet's firmware (touch, CONSYS Wi-Fi/Bluetooth, FM) from a local
+directory (packages/tb3-firmware); such an image must not be redistributed.
