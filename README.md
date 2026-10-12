@@ -9,7 +9,7 @@ Nerves system for the **Lenovo Tab3 7 Essential (TB3-710F)**: MediaTek MT8127, a
 | Storage | 8 GB eMMC; firmware lives inside the stock `userdata` partition (`mmcblk0p7`) |
 | Display | 1024x600 LVDS/DSI panel (`mediatek-drm`, HX8282), Mali-450 (`lima`) |
 | Linux | `mlainez/linux-mt8127` `6.18/staging` (v6.18.55 + MT8127/TB3 work), pinned commit in `nerves_defconfig` |
-| Bootloader | MTK preloader -> LK -> second stage on `boot` (mainline U-Boot, in progress) -> `extlinux/extlinux.conf` on the active boot slot |
+| Bootloader | MTK preloader -> LK -> mainline U-Boot v2026.10 on `boot` (`images/boot.img`, `patches/uboot`) -> `extlinux/extlinux.conf` on the active boot slot |
 | Console | On-device display (`tty1`); ssh over USB (`usb0`, g_ether) |
 | Wi-Fi / BT / FM | MT8127 CONSYS through the out-of-tree WMT stack (`mt8127-*` packages) |
 | Audio | MT6323 codec through the MT8127 AFE; mixer state in `/var/lib/alsa/asound.state` |
@@ -18,8 +18,9 @@ Nerves system for the **Lenovo Tab3 7 Essential (TB3-710F)**: MediaTek MT8127, a
 ## Status
 
 Builds; the layout and every fwup task are checked on files on the host
-(`scripts/host-check-fwup.sh`). **Not yet booted on the tablet**: the second
-stage that reads `extlinux.conf` from the boot slots is being written.
+(`scripts/host-check-fwup.sh`). **Not yet booted on the tablet.** U-Boot
+boots extlinux on the tablet (Buildroot root on `mmcblk0p7`); the U-Boot
+patch that reads the boot slots nested in `mmcblk0p7` is being written.
 
 ## Layout
 
@@ -109,10 +110,10 @@ fastboot.
 
 ## Installing
 
-The image is written raw to `mmcblk0p7`; the `boot` partition gets the second
-stage. Until the second stage exists, `images/linux-boot.img` is a debug
-Android boot.img (zImage-dtb + initramfs, command line in the header) that
-LK boots directly; its kernel is not A/B. The flash plan and the way back
+The image is written raw to `mmcblk0p7`; the `boot` partition gets
+`images/boot.img` (U-Boot packed as LK's "kernel"). `images/linux-boot.img`
+is a debug Android boot.img (zImage-dtb + initramfs, command line in the
+header) that LK boots without U-Boot; its kernel is not A/B. The flash plan and the way back
 (TWRP on `recovery`, the Buildroot `boot.img`) are in the port's
 `dossier/nerves-layout-adr.md`.
 

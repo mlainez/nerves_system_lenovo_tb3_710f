@@ -16,7 +16,7 @@ BR2_TOOLCHAIN_EXTERNAL_FORTRAN=y
 BR2_TOOLCHAIN_EXTERNAL_OPENMP=y
 BR2_TAR_OPTIONS="--no-same-owner"
 BR2_BACKUP_SITE="https://dl.nerves-project.org"
-BR2_GLOBAL_PATCH_DIR="${BR2_EXTERNAL_NERVES_PATH}/patches"
+BR2_GLOBAL_PATCH_DIR="${BR2_EXTERNAL_NERVES_PATH}/patches ${NERVES_DEFCONFIG_DIR}/patches"
 BR2_PACKAGE_OVERRIDE_FILE="${NERVES_DEFCONFIG_DIR}/local.mk"
 BR2_REPRODUCIBLE=y
 BR2_ROOTFS_SKELETON_CUSTOM=y
@@ -50,13 +50,18 @@ BR2_LINUX_KERNEL_NEEDS_HOST_OPENSSL=y
 # (scripts/create-boot-files.sh, fwup.conf); a copy in the squashfs would
 # never run.
 
-# Second stage: mainline U-Boot, chainloaded by LK from the `boot`
-# partition, reads /extlinux/extlinux.conf from the active boot slot.
-# TODO(u-boot): BR2_TARGET_UBOOT=y with the pinned release and the MT8127/TB3
-# patch series of buildroot-android (branch tb3-710f-uboot), the patches in
-# patches/uboot (add ${NERVES_DEFCONFIG_DIR}/patches to BR2_GLOBAL_PATCH_DIR),
-# and boot.img packing in scripts/create-boot-files.sh. Until then `boot` is
-# flashed separately.
+# Second stage: mainline U-Boot v2026.10 with the MT8127/TB3-710F series in
+# patches/uboot (see patches/uboot/README.md). LK loads u-boot.bin (DTB
+# appended) from the `boot` partition as if it were a kernel
+# (scripts/create-boot-files.sh packs images/boot.img); U-Boot then boots
+# /extlinux/extlinux.conf from the active boot slot.
+BR2_TARGET_UBOOT=y
+BR2_TARGET_UBOOT_BUILD_SYSTEM_KCONFIG=y
+BR2_TARGET_UBOOT_CUSTOM_GIT=y
+BR2_TARGET_UBOOT_CUSTOM_REPO_URL="https://source.denx.de/u-boot/u-boot.git"
+BR2_TARGET_UBOOT_CUSTOM_REPO_VERSION="v2026.10"
+BR2_TARGET_UBOOT_BOARD_DEFCONFIG="mt8127_tb3_710f"
+BR2_TARGET_UBOOT_NEEDS_OPENSSL=y
 
 # Busybox / base userland
 BR2_PACKAGE_BUSYBOX_CONFIG="${BR2_EXTERNAL_NERVES_PATH}/board/nerves-common/busybox.config"

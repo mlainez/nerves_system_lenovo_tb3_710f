@@ -98,6 +98,7 @@ defmodule NervesSystemLenovoTb3710f.MixProject do
       "extlinux",
       "scripts",
       "packages",
+      "patches",
       "fwup_include",
       "fwup-ops.conf",
       "fwup.conf",

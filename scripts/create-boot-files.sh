@@ -9,9 +9,12 @@
 #   zImage-dtb                           zImage with the DTB appended
 #   initramfs.gz                         from the citronics-initramfs package
 #   extlinux/extlinux.conf               from this system
-#   linux-boot.img                       debug only: Android boot.img (LK
-#                                        format) with zImage-dtb + the
-#                                        initramfs, see the README
+#   boot.img                             for the `boot` partition: Android
+#                                        boot.img (LK format) whose "kernel"
+#                                        is u-boot.bin, with an empty ramdisk
+#   linux-boot.img                       debug only: the same format with
+#                                        zImage-dtb + the initramfs, booted by
+#                                        LK without U-Boot (no kernel A/B)
 #
 # Inputs (env, from Buildroot's post-image stage):
 #   $BINARIES_DIR, $NERVES_DEFCONFIG_DIR
@@ -28,7 +31,7 @@ BOOT_SLOT_LIMIT=$((131072 * 512 - 4 * 1024 * 1024))
 fail() { echo "create-boot-files.sh: $*" >&2; exit 1; }
 
 cd "$BINARIES_DIR"
-for f in zImage "$DTB" initramfs.gz; do
+for f in zImage "$DTB" initramfs.gz u-boot.bin; do
     [ -f "$f" ] || fail "no $f in $BINARIES_DIR"
 done
 
@@ -50,7 +53,10 @@ cmdline=$(sed -n 's/^[[:space:]]*append[[:space:]]*//p' extlinux/extlinux.conf)
 [ "$(wc -c < linux-boot.img)" -le "$BOOT_PARTITION_BYTES" ] || \
     fail "linux-boot.img is larger than the 16 MiB boot partition"
 
-# TODO(u-boot): once the MT8127/TB3 U-Boot series exists (buildroot-android,
-# branch tb3-710f-uboot), pack $BINARIES_DIR/u-boot.bin into boot.img here
-# with the same mkbootimg.py arguments as the Buildroot board
-# (board/tb3_710f/scripts/create_boot_image.sh).
+# The arguments of buildroot-android's board/tb3_710f/scripts/create_boot_image.sh:
+# u-boot.bin in the kernel slot, an archive with no entries as the ramdisk
+# (LK wants one).
+printf '' | cpio -o -H newc 2>/dev/null | gzip -9 -n > empty.cpio.gz
+"$NERVES_DEFCONFIG_DIR/scripts/mkbootimg.py" u-boot.bin empty.cpio.gz boot.img
+[ "$(wc -c < boot.img)" -le "$BOOT_PARTITION_BYTES" ] || \
+    fail "boot.img is larger than the 16 MiB boot partition"
