@@ -48,10 +48,17 @@ defmodule NervesSystemLenovoTb3710f.MixProject do
       platform_config: [
         defconfig: "nerves_defconfig"
       ],
-      # No :env key. Its TARGET_ARCH variable reaches every host package's
-      # make, where GNU make's implicit COMPILE.c recipe expands it: host-lz4
-      # (needed for the LZ4 squashfs) then compiles `gcc ... arm -c` and
-      # fails. Buildroot takes its target settings from nerves_defconfig.
+      # The :env key is an optional experimental feature for adding environment
+      # variables to the crosscompile environment. These are intended for
+      # llvm-based tooling that may need more precise processor information.
+      env: [
+        {"TARGET_ARCH", "arm"},
+        {"TARGET_CPU", "cortex_a7"},
+        {"TARGET_OS", "linux"},
+        {"TARGET_ABI", "gnueabihf"},
+        {"TARGET_GCC_FLAGS",
+         "-mabi=aapcs-linux -mfpu=neon-vfpv4 -marm -fstack-protector-strong -mfloat-abi=hard -mcpu=cortex-a7 -fPIE -pie -Wl,-z,now -Wl,-z,relro"}
+      ],
       checksum: package_files()
     ]
   end

@@ -129,10 +129,10 @@ BR2_PACKAGE_NBTTY=y
 BR2_PACKAGE_NERVES_CONFIG=y
 BR2_PACKAGE_NERVES_CONFIG_ACCEPT_RNG_NOTICE=y
 
-# Root filesystem: squashfs, A/B, nested inside the stock userdata partition
-# with the boot slots and the application data (fwup_include/fwup-common.conf).
-BR2_TARGET_ROOTFS_SQUASHFS=y
-BR2_TARGET_ROOTFS_SQUASHFS4_LZ4=y
+# Root filesystem: squashfs (selected by nerves-config, default compression;
+# `mix firmware` rebuilds it with the application), A/B, nested inside the
+# stock userdata partition with the boot slots and the application data
+# (fwup_include/fwup-common.conf).
 # BR2_TARGET_ROOTFS_TAR is not set
 
 # This system's own packages, see packages/README.md.

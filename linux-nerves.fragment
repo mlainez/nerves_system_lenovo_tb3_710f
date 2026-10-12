@@ -21,12 +21,11 @@ CONFIG_CMDLINE_FROM_BOOTLOADER=y
 CONFIG_CMDLINE="console=tty0 loglevel=5 regulator_ignore_unused"
 
 # --- Built in, because they are needed before any module can load -------------
+# As in the official systems: gzip (mksquashfs' default, what `mix firmware`
+# writes), decompressed straight into the page cache, one decompressor per CPU.
 CONFIG_SQUASHFS=y
-CONFIG_SQUASHFS_LZ4=y
-# `mix firmware` rebuilds the rootfs with mksquashfs' default gzip; Buildroot's
-# own rootfs.squashfs is LZ4. As in the official systems: decompress straight
-# into the page cache, one decompressor per CPU.
 CONFIG_SQUASHFS_ZLIB=y
+# CONFIG_SQUASHFS_LZ4 is not set
 CONFIG_SQUASHFS_FILE_DIRECT=y
 CONFIG_SQUASHFS_COMPILE_DECOMP_MULTI_PERCPU=y
 CONFIG_F2FS_FS=y

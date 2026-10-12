@@ -72,7 +72,7 @@ else
     cp "$HERE/extlinux/extlinux.conf" system/images/extlinux/extlinux.conf
     mkdir -p rootfs/srv/erlang
     echo "stand-in" > rootfs/srv/erlang/README
-    mksquashfs rootfs system/images/rootfs.squashfs -comp lz4 -noappend -quiet
+    mksquashfs rootfs system/images/rootfs.squashfs -noappend -quiet
 fi
 
 NERVES_SDK_VERSION=0.0.1 fwup -c -f "$HERE/fwup.conf" -o v1.fw
