@@ -68,6 +68,8 @@ BR2_PACKAGE_F2FS_TOOLS=y
 BR2_PACKAGE_KMOD=y
 BR2_PACKAGE_KMOD_TOOLS=y
 BR2_PACKAGE_CA_CERTIFICATES=y
+# nerves_uevent (nerves_runtime) talks netlink through libmnl.
+BR2_PACKAGE_LIBMNL=y
 # kpartx maps the Nerves partitions nested in userdata, in the initramfs.
 BR2_PACKAGE_MULTIPATH_TOOLS=y
 
