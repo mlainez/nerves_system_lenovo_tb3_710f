@@ -101,9 +101,18 @@ port did these in init scripts):
 | `S30alsa` | `alsactl --no-ucm -f /var/lib/alsa/asound.state restore` once `/dev/snd/controlC0` exists |
 | `S35bluetooth` | `modprobe mtk_consys_bt bdaddr=<address derived from the eMMC CID>` before bluetoothd |
 | `S36fmradio` | `modprobe mtk_consys_fm` when the radio is wanted |
-| `S40wifi` | `wlan_mt` loads by modalias; VintageNetWiFi on `wlan0`. Never unload the WMT stack |
+| `S40wifi` | `wlan_mt` loads by modalias; VintageNetWiFi on `wlan0`. `/etc/modprobe.d/tb3-wmt.conf` makes `modprobe -r` refuse to unload the WMT stack |
 | `S45udhcpd`, `S40network` | VintageNet on `usb0` (10.0.42.1, DHCP server for 10.0.42.2) |
 | `S50sshd` | `nerves_ssh` |
+
+`hello_lenovo_tb3_710f` (`lib/hello_lenovo_tb3_710f/tb3/`) shows these steps
+in Elixir.
+
+The kernel reads firmware straight from `/lib/firmware` in the rootfs (no
+user helper). The boot chain leaves the MTK watchdog armed (31 s maximum);
+the kernel pings it until `nerves_heart` opens `/dev/watchdog0`, after which
+a BEAM that stops beating for `HEART_BEAT_TIMEOUT` (30 s in the default
+`vm.args`) resets the tablet. Keep that timeout under 31 s.
 
 `reboot-mode bootloader` (from `tb3-tools`) reboots straight into LK's
 fastboot.
