@@ -70,9 +70,13 @@ BR2_PACKAGE_BUSYBOX_CONFIG_FRAGMENT_FILES="${NERVES_DEFCONFIG_DIR}/busybox-tb3.f
 BR2_PACKAGE_BUSYBOX_SHOW_OTHERS=y
 # nerves_runtime formats /root with mkfs.f2fs when it does not mount.
 BR2_PACKAGE_F2FS_TOOLS=y
+# kmod rather than BusyBox modprobe: /etc/modprobe.d uses `remove` commands
+# (tb3-wmt.conf), which BusyBox modprobe ignores.
 BR2_PACKAGE_KMOD=y
 BR2_PACKAGE_KMOD_TOOLS=y
 BR2_PACKAGE_CA_CERTIFICATES=y
+BR2_PACKAGE_LIBP11=y
+BR2_PACKAGE_UNIXODBC=y
 # nerves_uevent (nerves_runtime) talks netlink through libmnl.
 BR2_PACKAGE_LIBMNL=y
 # kpartx maps the Nerves partitions nested in userdata, in the initramfs.
@@ -85,22 +89,24 @@ BR2_PACKAGE_MESA3D_GBM=y
 BR2_PACKAGE_MESA3D_OPENGL_EGL=y
 BR2_PACKAGE_MESA3D_OPENGL_ES=y
 
-# Audio: MT6323 codec through the MT8127 AFE. The application sets the mixer.
+# Audio: MT6323 codec through the MT8127 AFE. The application sets the mixer
+# with amixer, as in the official systems.
 BR2_PACKAGE_ALSA_UTILS=y
-BR2_PACKAGE_ALSA_UTILS_ALSACTL=y
 BR2_PACKAGE_ALSA_UTILS_AMIXER=y
 BR2_PACKAGE_ALSA_UTILS_APLAY=y
 
 # Wi-Fi: CONSYS through the out-of-tree WMT stack (mt8127-*), nl80211.
+# wpa_supplicant options as in nerves_system_rpi0 (VintageNetWiFi).
 BR2_PACKAGE_WIRELESS_REGDB=y
 BR2_PACKAGE_WPA_SUPPLICANT=y
 BR2_PACKAGE_WPA_SUPPLICANT_AP_SUPPORT=y
-BR2_PACKAGE_WPA_SUPPLICANT_EAP=y
-BR2_PACKAGE_WPA_SUPPLICANT_WPS=y
+BR2_PACKAGE_WPA_SUPPLICANT_AUTOSCAN=y
+BR2_PACKAGE_WPA_SUPPLICANT_CTRL_IFACE=y
+BR2_PACKAGE_WPA_SUPPLICANT_DEBUG_SYSLOG=y
+BR2_PACKAGE_WPA_SUPPLICANT_HOTSPOT=y
+BR2_PACKAGE_WPA_SUPPLICANT_MESH_NETWORKING=y
 BR2_PACKAGE_WPA_SUPPLICANT_WPA3=y
-BR2_PACKAGE_WPA_SUPPLICANT_CLI=y
-BR2_PACKAGE_WPA_SUPPLICANT_WPA_CLIENT_SO=y
-BR2_PACKAGE_WPA_SUPPLICANT_PASSPHRASE=y
+BR2_PACKAGE_WPA_SUPPLICANT_WPS=y
 
 # Bluetooth: CONSYS BT (mtk_consys_bt), BlueZ userspace.
 BR2_PACKAGE_DBUS=y
@@ -108,19 +114,12 @@ BR2_PACKAGE_BLUEZ5_UTILS=y
 BR2_PACKAGE_BLUEZ5_UTILS_CLIENT=y
 BR2_PACKAGE_BLUEZ5_UTILS_TOOLS=y
 
-# Cameras: the kernel side (mt8127-camera) and V4L2 tools. libcamera is not
+# Cameras: the kernel side (mt8127-camera) and V4L2. libcamera is not
 # included: the MT8127 pipeline patches target libcamera 0.5 and do not apply
-# to the 0.7 this Buildroot ships.
+# to the 0.7 this Buildroot ships, so v4l2-ctl is the capture tool (the role
+# rpicam-apps has on nerves_system_rpi0).
 BR2_PACKAGE_LIBV4L=y
 BR2_PACKAGE_LIBV4L_UTILS=y
-
-# Diagnostics usable from the IEx shell.
-BR2_PACKAGE_IW=y
-BR2_PACKAGE_I2C_TOOLS=y
-BR2_PACKAGE_EVTEST=y
-BR2_PACKAGE_LIBGPIOD=y
-BR2_PACKAGE_LIBGPIOD_TOOLS=y
-BR2_PACKAGE_USBUTILS=y
 
 # Nerves bookkeeping
 BR2_NERVES_SYSTEM_NAME="nerves_system_lenovo_tb3_710f"
