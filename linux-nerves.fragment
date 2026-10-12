@@ -34,11 +34,19 @@ CONFIG_MD=y
 CONFIG_BLK_DEV_DM=y
 CONFIG_RD_GZIP=y
 
-# --- USB networking ------------------------------------------------------------
+# --- USB gadget ------------------------------------------------------------------
 #
-# g_ether, built in, for the initramfs recovery shell and VintageNetDirect on
-# usb0, as on the Buildroot board.
+# As in nerves_system_rpi0 and nerves_system_bbb: the legacy g_ether gadget
+# (CDC ECM, plus RNDIS for Windows) built in, no ACM serial console. usb0 is
+# configured by VintageNetDirect from the application; the initramfs recovery
+# shell uses it too. MAC addresses are g_ether's per-boot random ones, as in
+# the official systems.
+CONFIG_USB_GADGET=y
 CONFIG_USB_ETH=y
+CONFIG_USB_ETH_RNDIS=y
+# CONFIG_USB_ETH_EEM is not set
+# CONFIG_USB_CDC_COMPOSITE is not set
+# CONFIG_USB_G_SERIAL is not set
 
 # --- Modules -------------------------------------------------------------------
 #
@@ -72,10 +80,14 @@ CONFIG_SCHED_AUTOGROUP=y
 CONFIG_SLAB_FREELIST_RANDOM=y
 CONFIG_FANOTIFY=y
 
-# erlinit mounts the cpu cgroup controller, as in the official systems.
+# The cgroup controllers of nerves_system_bbb and nerves_system_rpi0; erlinit
+# mounts cpu and memory (MuonTrap uses them to limit OS processes).
 CONFIG_CGROUPS=y
+CONFIG_MEMCG=y
+CONFIG_BLK_CGROUP=y
 CONFIG_CGROUP_SCHED=y
 CONFIG_FAIR_GROUP_SCHED=y
+CONFIG_CGROUP_PIDS=y
 CONFIG_CGROUP_FREEZER=y
 CONFIG_CGROUP_DEVICE=y
 CONFIG_CGROUP_CPUACCT=y
@@ -97,8 +109,11 @@ CONFIG_MPTCP=y
 
 # --- Debugging ---------------------------------------------------------------------
 #
-# debugfs and pstore/ramoops stay: drivers on this tablet are still being
-# brought up. No boot logo (a first-light aid).
+# pstore/ramoops as in the official systems. debugfs stays built in (not
+# mounted at boot): the out-of-tree CONSYS and camera drivers still being
+# brought up expose their controls there; `mount -t debugfs none
+# /sys/kernel/debug` when needed. No boot logo (a first-light aid).
+CONFIG_PSTORE_PMSG=y
 # CONFIG_LOGO is not set
 # CONFIG_FTRACE is not set
 # CONFIG_KALLSYMS_ALL is not set
