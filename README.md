@@ -10,17 +10,16 @@ Nerves system for the **Lenovo Tab3 7 Essential (TB3-710F)**: MediaTek MT8127, a
 | Display | 1024x600 LVDS/DSI panel (`mediatek-drm`, HX8282), Mali-450 (`lima`) |
 | Linux | `mlainez/linux-mt8127` `6.18/staging` (v6.18.55 + MT8127/TB3 work), pinned commit in `nerves_defconfig` |
 | Bootloader | MTK preloader -> LK -> mainline U-Boot v2026.10 on `boot` (`images/boot.img`, `patches/uboot`) -> `extlinux/extlinux.conf` on the active boot slot |
-| Console | On-device display (`tty1`); ssh over USB (`usb0`, g_ether) |
+| Console | IEx on the display (`tty1`); ssh over USB (`usb0`, built-in `g_ether`, as `nerves_system_rpi0`) |
 | Wi-Fi / BT / FM | MT8127 CONSYS through the out-of-tree WMT stack (`mt8127-*` packages) |
 | Audio | MT6323 codec through the MT8127 AFE; the application sets the mixer (`amixer`) |
 | Cameras | SP2508 / SP0A20 through `mtk_camsys` (kernel side only, no libcamera yet) |
 
 ## Status
 
-Builds; the layout and every fwup task are checked on files on the host
-(`scripts/host-check-fwup.sh`). **Not yet booted on the tablet.** U-Boot
-boots extlinux on the tablet (Buildroot root on `mmcblk0p7`); the U-Boot
-patch that reads the boot slots nested in `mmcblk0p7` is being written.
+Boots on the tablet from U-Boot: IEx on the display and over ssh, A/B
+upgrades with `mix upload`. The layout and every fwup task are also checked
+on files on the host (`scripts/host-check-fwup.sh`).
 
 ## Layout
 
@@ -50,8 +49,10 @@ is always the boot slot to run and partition 2 its rootfs. A boot slot holds
 `/zImage-dtb` (the same zImage with the DTB appended) and `/initramfs.gz`.
 The initramfs (`packages/citronics-initramfs`) maps the nested partitions
 with kpartx (`/dev/mmcblk0p7p1..3`), mounts partition 2 and switch_roots into
-erlinit; if that fails it brings up USB networking (10.0.42.1, the computer
-gets 10.0.42.2) and a telnet shell.
+erlinit. Only if that fails does it bring up a recovery shell: USB
+networking at the porting kit's rescue addresses (the tablet is 10.0.42.1,
+the computer gets 10.0.42.2) and telnet. A normal boot leaves `usb0` to the
+application.
 
 Kernel, DTB, initramfs, modules and rootfs therefore change together and
 revert together.
@@ -102,11 +103,29 @@ port did these in init scripts):
 | `S35bluetooth` | `modprobe mtk_consys_bt bdaddr=<address derived from the eMMC CID>` before bluetoothd |
 | `S36fmradio` | `modprobe mtk_consys_fm` when the radio is wanted |
 | `S40wifi` | `wlan_mt` loads by modalias; VintageNetWiFi on `wlan0`. `/etc/modprobe.d/tb3-wmt.conf` makes `modprobe -r` refuse to unload the WMT stack |
-| `S45udhcpd`, `S40network` | VintageNet on `usb0` (10.0.42.1, DHCP server for 10.0.42.2) |
+| `S45udhcpd`, `S40network` | `nerves_pack`'s default: `VintageNetDirect` on `usb0`, `mdns_lite` (`nerves.local`) |
 | `S50sshd` | `nerves_ssh` |
 
 `hello_lenovo_tb3_710f` (`lib/hello_lenovo_tb3_710f/tb3/`) shows these steps
 in Elixir.
+
+### Connecting
+
+The USB port is a `g_ether` gadget (CDC ECM, RNDIS for Windows), as on
+`nerves_system_rpi0` and `nerves_system_bbb`, and an application generated
+with `mix nerves.new` needs nothing more: `VintageNetDirect` serves the
+computer an address on `usb0` and `mdns_lite` advertises the tablet, so
+
+```bash
+ssh nerves.local
+mix upload nerves.local
+```
+
+work as with any Nerves device. The computer needs DHCP on the new USB
+Ethernet interface and mDNS resolution (`nss-mdns`); without mDNS the tablet
+is the computer's address on that interface minus one (`172.31.x.y/30`).
+There is no serial console on the gadget (none on `nerves_system_rpi0`
+either); the IEx console is on the display.
 
 The kernel reads firmware straight from `/lib/firmware` in the rootfs (no
 user helper). The boot chain leaves the MTK watchdog armed (31 s maximum);
