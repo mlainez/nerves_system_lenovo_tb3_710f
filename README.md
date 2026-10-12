@@ -69,7 +69,9 @@ mix compile
 `firmware/` must hold the tablet's proprietary firmware laid out like
 `/lib/firmware`, prepared with buildroot-android's
 `board/tb3_710f/scripts/prepare_firmware.sh` from the stock kernel source and
-the stock `/system/etc/firmware`. It is git-ignored and never redistributed.
+the stock `/system/etc/firmware`. It is git-ignored: the firmware is never
+part of this repository, but the release artifacts on GitHub include it, so
+using a released system needs no `firmware/` directory.
 
 The board packages (`packages/mt8127-*`, `tb3-tools`) build the
 sources of [Spin42/buildroot-android](https://github.com/Spin42/buildroot-android)

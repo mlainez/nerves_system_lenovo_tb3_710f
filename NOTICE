@@ -30,6 +30,9 @@ third-party source that is not covered by this repository's license:
 
   * scripts/mkbootimg.py comes from buildroot-android's tb3_710f board.
 
-No proprietary firmware is part of this repository. A built image contains
-the tablet's firmware (touch, CONSYS Wi-Fi/Bluetooth, FM) from a local
-directory (packages/tb3-firmware); such an image must not be redistributed.
+No proprietary firmware is part of this repository. The tablet's firmware
+(Silead touch, MediaTek CONSYS Wi-Fi/Bluetooth, MT6627 FM) comes from a local
+directory at build time (packages/tb3-firmware) and is included, unmodified,
+in the released system artifacts so the hardware works out of the box. These
+files remain the property of their respective owners (Lenovo, MediaTek,
+Silead); their terms apply to them, not this project's licenses.
