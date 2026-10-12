@@ -8,7 +8,6 @@ source "$NERVES_DEFCONFIG_DIR/packages/citronics-initramfs/Config.in"
 source "$NERVES_DEFCONFIG_DIR/packages/unudhcpd/Config.in"
 source "$NERVES_DEFCONFIG_DIR/packages/tb3-firmware/Config.in"
 source "$NERVES_DEFCONFIG_DIR/packages/tb3-tools/Config.in"
-source "$NERVES_DEFCONFIG_DIR/packages/tb3-audio/Config.in"
 
 menu "MediaTek MT8127 connectivity and cameras"
 source "$NERVES_DEFCONFIG_DIR/packages/mt8127-btif/Config.in"

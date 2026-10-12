@@ -12,7 +12,7 @@ Nerves system for the **Lenovo Tab3 7 Essential (TB3-710F)**: MediaTek MT8127, a
 | Bootloader | MTK preloader -> LK -> mainline U-Boot v2026.10 on `boot` (`images/boot.img`, `patches/uboot`) -> `extlinux/extlinux.conf` on the active boot slot |
 | Console | On-device display (`tty1`); ssh over USB (`usb0`, g_ether) |
 | Wi-Fi / BT / FM | MT8127 CONSYS through the out-of-tree WMT stack (`mt8127-*` packages) |
-| Audio | MT6323 codec through the MT8127 AFE; mixer state in `/var/lib/alsa/asound.state` |
+| Audio | MT6323 codec through the MT8127 AFE; the application sets the mixer (`amixer`) |
 | Cameras | SP2508 / SP0A20 through `mtk_camsys` (kernel side only, no libcamera yet) |
 
 ## Status
@@ -70,7 +70,7 @@ mix compile
 `board/tb3_710f/scripts/prepare_firmware.sh` from the stock kernel source and
 the stock `/system/etc/firmware`. It is git-ignored and never redistributed.
 
-The board packages (`packages/mt8127-*`, `tb3-tools`, `tb3-audio`) build the
+The board packages (`packages/mt8127-*`, `tb3-tools`) build the
 sources of [Spin42/buildroot-android](https://github.com/Spin42/buildroot-android)
 at the commit pinned in `external.mk`; `local.mk.example` shows how to build
 them from a checkout instead.
@@ -98,7 +98,7 @@ port did these in init scripts):
 | Buildroot init script | Here |
 | --- | --- |
 | `S05modules`, `S10mdev` | `nerves_runtime`'s uevent handling loads modules by modalias |
-| `S30alsa` | `alsactl --no-ucm -f /var/lib/alsa/asound.state restore` once `/dev/snd/controlC0` exists |
+| `S30alsa` | set the mixer controls by name with `amixer` once `/dev/snd/controlC0` exists (a saved `asound.state` stops matching when the kernel adds a control) |
 | `S35bluetooth` | `modprobe mtk_consys_bt bdaddr=<address derived from the eMMC CID>` before bluetoothd |
 | `S36fmradio` | `modprobe mtk_consys_fm` when the radio is wanted |
 | `S40wifi` | `wlan_mt` loads by modalias; VintageNetWiFi on `wlan0`. `/etc/modprobe.d/tb3-wmt.conf` makes `modprobe -r` refuse to unload the WMT stack |

@@ -8,7 +8,7 @@ hardware-specific it is.
 | `[TB3-710F]` | Bound to this tablet. |
 | `[Generic]` | No hardware dependency. |
 
-The `mt8127-*`, `tb3-tools` and `tb3-audio` packages build sources of
+The `mt8127-*` and `tb3-tools` packages build sources of
 [Spin42/buildroot-android](https://github.com/Spin42/buildroot-android) at
 the commit in `external.mk` (`TB3_BRA_VERSION`): one tarball, of which each
 package extracts its own directory. Their `.mk` glue follows the Buildroot
@@ -22,4 +22,3 @@ board's packages, without the init scripts.
 | `mt8127-camera` | `mtk_camsys` and the SP2508/SP0A20 sensor drivers. |
 | `tb3-firmware` | Proprietary firmware from a local directory (`firmware/`). |
 | `tb3-tools` | `tb3-pmic` and `reboot-mode` (MT6323 RTC bits read by LK). |
-| `tb3-audio` | ALSA mixer state for the TB3-710F card. |

@@ -15,8 +15,8 @@ third-party source that is not covered by this repository's license:
     buildroot-android tb3_710f board configuration.
 
   * The MT8127 connectivity and camera drivers (packages/mt8127-*): GPL-2.0,
-    built from https://github.com/Spin42/buildroot-android. tb3-tools and
-    tb3-audio come from the same repository (MIT).
+    built from https://github.com/Spin42/buildroot-android. tb3-tools comes from
+    the same repository (MIT).
 
   * Buildroot and the packages it builds: many licenses. Run
     `make legal-info` in the Buildroot output directory for the manifest
