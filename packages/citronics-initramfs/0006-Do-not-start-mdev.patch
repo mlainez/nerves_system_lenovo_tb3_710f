@@ -11,7 +11,7 @@ this init uses.
  1 file changed, 6 deletions(-)
 
 diff --git a/initramfs/usr/share/citronics-initramfs/init b/initramfs/usr/share/citronics-initramfs/init
-index ee36f0d..2805a8c 100755
+index 19ad1d4..18fb4d2 100755
 --- a/initramfs/usr/share/citronics-initramfs/init
 +++ b/initramfs/usr/share/citronics-initramfs/init
 @@ -22,15 +22,9 @@ mount_proc_sys_dev

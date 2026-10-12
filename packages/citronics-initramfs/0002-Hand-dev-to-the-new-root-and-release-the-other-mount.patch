@@ -1,0 +1,33 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Marc Lainez <marc.lainez@gmail.com>
+Date: Mon, 12 Oct 2026 13:54:48 +0200
+Subject: [PATCH 2/6] Hand /dev to the new root and release the other mounts
+
+erlinit mounts /proc, /sys, /dev/pts, /run and configfs itself and only
+remounts /dev. busybox switch_root would leave the new root with an empty
+/dev, so /dev moves into /sysroot; the other pseudo filesystems are
+unmounted so that erlinit does not find them already mounted.
+---
+ initramfs/usr/share/citronics-initramfs/init | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/initramfs/usr/share/citronics-initramfs/init b/initramfs/usr/share/citronics-initramfs/init
+index cc1aa6a..19ad1d4 100755
+--- a/initramfs/usr/share/citronics-initramfs/init
++++ b/initramfs/usr/share/citronics-initramfs/init
+@@ -56,7 +56,15 @@ if [ -n "$rootfs" ]; then
+         # echo_kmsg "Restore consoles to original state..."
+         # restore_consoles
+ 
++        # erlinit mounts /proc, /sys, /dev/pts, /run and configfs itself
++        # and only remounts /dev, so /dev (with the links made above to
++        # the nested partitions) moves into /sysroot and the rest is
++        # released. busybox switch_root would otherwise leave the new root
++        # with an empty /dev, and erlinit could not resolve any /dev path.
+         echo_kmsg "Switching to /sysroot"
++        umount /dev/pts /config /run /sys 2>/dev/null
++        umount /proc 2>/dev/null
++        mount --move /dev /sysroot/dev
+         exec switch_root /sysroot /sbin/init
+     else
+         echo_kmsg "Rootfs not mounted, launching debug_console..."
