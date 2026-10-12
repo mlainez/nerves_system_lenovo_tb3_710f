@@ -55,6 +55,7 @@ ops_info() {
 
 # --- system images ---------------------------------------------------------------
 mkdir -p system/images/extlinux
+cp -r "$HERE/fwup_include" system/images/
 export NERVES_SYSTEM=$WORK/system
 export NERVES_SDK_IMAGES=$HERE
 DTB=mt8127-lenovo-tb3-710f.dtb
@@ -81,8 +82,11 @@ fwup -c -f "$HERE/fwup-ops.conf" -o ops.fw
 check "fwup.conf and fwup-ops.conf compile" true
 
 # --- complete, as mix firmware.image + a raw write to mmcblk0p7 -------------------
+# A stale ext4 superblock at byte 1024, as the Buildroot port leaves on
+# userdata.
 rm -f nerves.img
-fwup -q -a -i v1.fw -t complete -d nerves.img
+printf '\123\357' | dd of=nerves.img bs=1 seek=$((1024 + 56)) conv=notrunc status=none
+NERVES_SERIAL_NUMBER=TB3TEST fwup -q -a -i v1.fw -t complete -d nerves.img
 img_bytes=$(stat -c %s nerves.img)
 echo "image: $img_bytes bytes ($((img_bytes / 1024 / 1024)) MiB)"
 check "the image ends before the MTK BMT pool, with a margin" \
@@ -136,6 +140,9 @@ check "MBR has no fourth partition" test "$(part 3)" = "0 0"
 check "env nerves_fw_active=a" test "$(env_get nerves_fw_active)" = a
 check "env a.nerves_fw_version=0.0.1" test "$(env_get a.nerves_fw_version)" = 0.0.1
 check "env a.nerves_fw_validated=1" test "$(env_get a.nerves_fw_validated)" = 1
+check "env nerves_serial_number from provisioning" test "$(env_get nerves_serial_number)" = TB3TEST
+check "blocks 1-2047 are zeroed (no stale filesystem signature)" \
+    sh -c "dd if=userdata.img bs=512 skip=1 count=2047 status=none | cmp -s - /dev/zero -n $((2047 * 512))"
 check "env nerves_fw_devpath=/dev/mmcblk0p7" test "$(env_get nerves_fw_devpath)" = /dev/mmcblk0p7
 check "env app devpath /dev/mmcblk0p7p3" \
     test "$(env_get a.nerves_fw_application_part0_devpath)" = /dev/mmcblk0p7p3
