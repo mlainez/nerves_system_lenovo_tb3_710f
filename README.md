@@ -60,7 +60,7 @@ revert together.
 ## Building
 
 ```bash
-cp local.mk.example local.mk            # the kernel fork is not published yet
+# optional: cp local.mk.example local.mk to build from local checkouts
 ln -s <prepared firmware dir> firmware  # see below
 mix deps.get
 mix compile

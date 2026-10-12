@@ -2,7 +2,7 @@
 #
 # nerves_defconfig sets BR2_PACKAGE_OVERRIDE_FILE to
 # ${NERVES_DEFCONFIG_DIR}/local.mk. Buildroot -includes it, so having no
-# local.mk is the normal case once the kernel fork is published: the kernel
+# local.mk is the normal case: the kernel
 # and the board packages are then fetched from the commits pinned in
 # nerves_defconfig and external.mk, and builds are reproducible.
 #
@@ -11,9 +11,9 @@
 # the tarball, and does not apply patches/linux. A firmware built this way is
 # not reproducible by anyone else.
 
-# The kernel fork (mlainez/linux-mt8127, branch 6.18/staging) is not
-# published yet, so this line is required for now.
-LINUX_OVERRIDE_SRCDIR = $(HOME)/Projects/linux-mt8127
+# Kernel from a local checkout of github.com/mlainez/linux-mt8127
+# (branch 6.18/staging) instead of the pinned tarball.
+# LINUX_OVERRIDE_SRCDIR = $(HOME)/Projects/linux-mt8127
 
 # Board packages from a buildroot-android checkout (the directories the
 # pinned tarball would provide).
