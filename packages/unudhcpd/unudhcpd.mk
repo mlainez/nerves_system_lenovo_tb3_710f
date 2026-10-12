@@ -13,4 +13,9 @@ UNUDHCPD_SITE_METHOD = git
 UNUDHCPD_LICENSE = GPL-3.0
 UNUDHCPD_LICENSE_FILES = LICENSE
 
+# Only the initramfs recovery shell runs it (citronics-initramfs copies it
+# from the build directory). The Nerves rootfs has no DHCP server of its own:
+# VintageNetDirect serves usb0.
+UNUDHCPD_INSTALL_TARGET = NO
+
 $(eval $(meson-package))

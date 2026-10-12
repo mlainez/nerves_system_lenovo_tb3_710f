@@ -23,8 +23,10 @@ CITRONICS_INITRAMFS_PKG_DIR = $(NERVES_DEFCONFIG_DIR)/packages/citronics-initram
 # The non-BusyBox programs the init runs: kpartx maps the nested partitions,
 # parted answers the upstream free-space check (resizing stays off: the
 # application partition must not grow into the MTK BMT pool), unudhcpd serves
-# the USB recovery network.
-CITRONICS_BINARIES = busybox kpartx parted unudhcpd
+# the USB recovery network. unudhcpd is not installed in the rootfs, so it
+# comes from its build directory.
+CITRONICS_BINARIES = busybox kpartx parted
+CITRONICS_UNUDHCPD_BIN = $(UNUDHCPD_DIR)/buildroot-build/unudhcpd
 
 KERNEL_VERSION = $(shell find $(TARGET_DIR)/lib/modules -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | head -n1)
 
@@ -81,6 +83,12 @@ define CITRONICS_INITRAMFS_INSTALL_TARGET_CMDS
 		$(CITRONICS_INITRAMFS_PKG_DIR)/scripts/copy_libs_for_binary.sh \
 			$$src $(TARGET_DIR) $(CITRONICS_INITRAMFS_STAGING) $(TARGET_READELF) ; \
 	done
+
+	$(INSTALL) -D -m 0755 $(CITRONICS_UNUDHCPD_BIN) \
+		$(CITRONICS_INITRAMFS_STAGING)/usr/bin/unudhcpd
+	$(TARGET_STRIP) $(CITRONICS_INITRAMFS_STAGING)/usr/bin/unudhcpd
+	$(CITRONICS_INITRAMFS_PKG_DIR)/scripts/copy_libs_for_binary.sh \
+		$(CITRONICS_UNUDHCPD_BIN) $(TARGET_DIR) $(CITRONICS_INITRAMFS_STAGING) $(TARGET_READELF)
 
 	cd $(CITRONICS_INITRAMFS_STAGING)/bin && \
 		ln -sf busybox sh && \

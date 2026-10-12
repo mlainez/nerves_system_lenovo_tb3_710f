@@ -22,7 +22,8 @@ deviceinfo_usb_idProduct="0xd001"
 deviceinfo_usb_serialnumber=""
 deviceinfo_usb_network_function="ncm.usb0"
 
-# unudhcpd gives the PC 10.0.42.2 (the tablet is 10.0.42.1), the addresses
-# of the Buildroot system and of its rescue image.
+# Recovery shell only (the rootfs failed to mount): unudhcpd gives the PC
+# 10.0.42.2 and the tablet is 10.0.42.1, the porting kit's rescue addresses.
+# A normal boot leaves usb0 unconfigured for VintageNetDirect.
 deviceinfo_disable_dhcpd="false"
 deviceinfo_getty=""
